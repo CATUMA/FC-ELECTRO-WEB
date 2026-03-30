@@ -3,11 +3,15 @@ import type { ProductoCarrito } from "../App";
 
 interface Props {
   carrito: ProductoCarrito[];
-  eliminarDelCarrito: (id: number) => void;
+  eliminarDelCarrito: (id: string) => void;
 }
 
 function Carrito({ carrito, eliminarDelCarrito }: Props) {
-  const total = carrito.reduce((acc, producto) => acc + producto.precio, 0);
+
+  const total = carrito.reduce(
+    (acc, producto) => acc + producto.precio * producto.cantidad,
+    0
+  );
 
   if (carrito.length === 0) {
     return (
@@ -29,12 +33,13 @@ function Carrito({ carrito, eliminarDelCarrito }: Props) {
 
       {carrito.map((producto) => (
         <div
-          key={producto.id}
+          key={producto.id + "-" + producto.cantidad} // 🔥 RE-RENDER FIX
           className="d-flex align-items-center justify-content-between border rounded p-3 mb-3 shadow-sm"
         >
           <div className="d-flex align-items-center">
+
             <img
-              src={producto.imagen}
+              src={producto.imagen || "https://via.placeholder.com/80"}
               alt={producto.nombre}
               width="80"
               className="me-3 rounded"
@@ -42,16 +47,22 @@ function Carrito({ carrito, eliminarDelCarrito }: Props) {
 
             <div>
               <h5 className="mb-1">{producto.nombre}</h5>
-              <p className="mb-0">S/ {producto.precio}</p>
+
+              <p className="mb-0">
+                S/ {producto.precio}
+              </p>
+
+              <small className="text-muted">
+                Cantidad: {producto.cantidad}
+              </small>
             </div>
           </div>
 
-          {/* BOTÓN X */}
           <button
-            className="btn btn-danger"
+            className="btn btn-outline-danger"
             onClick={() => eliminarDelCarrito(producto.id)}
           >
-            X
+            Eliminar
           </button>
         </div>
       ))}

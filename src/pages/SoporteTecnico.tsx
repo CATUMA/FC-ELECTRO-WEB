@@ -1,23 +1,34 @@
 import { useState } from "react";
 import { FaCog, FaWhatsapp } from "react-icons/fa";
 
+type FormData = {
+  nombre: string;
+  correo: string;
+  tipoProducto: string;
+  descripcion: string;
+};
+
 function SoporteTecnico() {
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     nombre: "",
     correo: "",
     tipoProducto: "Laptop",
     descripcion: ""
   });
 
-  const handleChange = (e: any) => {
+  // ✅ TIPADO CORRECTO
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = async (e: any) => {
+  // ✅ TIPADO CORRECTO
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -34,6 +45,7 @@ function SoporteTecnico() {
 
       alert("Solicitud enviada correctamente");
 
+      // 🔄 Reset
       setFormData({
         nombre: "",
         correo: "",

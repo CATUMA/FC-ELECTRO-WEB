@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "./context/useAuth";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Inicio from "./pages/Inicio";
@@ -9,24 +11,64 @@ import Login from "./pages/Login";
 import Registro from "./pages/Registro";
 import Ofertas from "./pages/Ofertas";
 import SoporteTecnico from "./pages/SoporteTecnico";
-
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminProductos from "./pages/admin/AdminProductos";
+import AdminUsuarios from "./pages/admin/AdminUsuarios";
 
 export interface ProductoCarrito {
-  id: number;
+  id: string;
   nombre: string;
   precio: number;
   imagen: string;
+  cantidad: number;
 }
 
 function App() {
-  const [carrito, setCarrito] = useState<ProductoCarrito[]>([]);
 
+  const { user } = useAuth();
+
+  // 🔑 CLAVE POR USUARIO
+  const keyCarrito = user ? `carrito_${user.id}` : "carrito_invitado";
+
+  // 🔥 CARGA INICIAL
+  const [carrito, setCarrito] = useState<ProductoCarrito[]>(() => {
+    const data = localStorage.getItem(keyCarrito);
+    return data ? JSON.parse(data) : [];
+  });
+
+  // 🔥 GUARDAR AUTOMÁTICAMENTE
+  useEffect(() => {
+    localStorage.setItem(keyCarrito, JSON.stringify(carrito));
+  }, [carrito, keyCarrito]);
+
+  // ➕ AGREGAR
   const agregarAlCarrito = (producto: ProductoCarrito) => {
-    setCarrito([...carrito, producto]);
+    setCarrito((prev) => {
+      const existe = prev.find((p) => p.id === producto.id);
+
+      if (existe) {
+        return prev.map((p) =>
+          p.id === producto.id
+            ? { ...p, cantidad: p.cantidad + 1 }
+            : p
+        );
+      }
+
+      return [...prev, { ...producto, cantidad: 1 }];
+    });
   };
 
-  const eliminarDelCarrito = (id: number) => {
-    setCarrito(carrito.filter((producto) => producto.id !== id));
+  // ➖ ELIMINAR (RESTAR CANTIDAD)
+  const eliminarDelCarrito = (id: string) => {
+    setCarrito((prev) =>
+      prev
+        .map((p) =>
+          p.id === id
+            ? { ...p, cantidad: p.cantidad - 1 }
+            : p
+        )
+        .filter((p) => p.cantidad > 0)
+    );
   };
 
   return (
@@ -34,9 +76,7 @@ function App() {
       <Navbar />
 
       <Routes>
-        {/* Redirección inicial */}
         <Route path="/" element={<Navigate to="/inicio" />} />
-
         <Route path="/inicio" element={<Inicio />} />
 
         <Route
@@ -48,6 +88,7 @@ function App() {
           path="/carrito"
           element={
             <Carrito
+              key={keyCarrito}
               carrito={carrito}
               eliminarDelCarrito={eliminarDelCarrito}
             />
@@ -59,11 +100,27 @@ function App() {
         <Route path="/ofertas" element={<Ofertas />} />
         <Route path="/soporte" element={<SoporteTecnico />} />
 
-        {/* Ruta no encontrada */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute rol="admin">
+              <AdminProductos />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/usuarios"
+          element={
+            <ProtectedRoute rol="admin">
+              <AdminUsuarios />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/inicio" />} />
       </Routes>
 
-      {/* FOOTER GLOBAL */}
       <Footer />
     </BrowserRouter>
   );
