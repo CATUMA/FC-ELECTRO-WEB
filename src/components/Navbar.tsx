@@ -83,20 +83,22 @@ function Navbar() {
               <Link className="nav-link" to="/ofertas">Ofertas</Link>
             </li>
 
-            {user?.rol === "admin" && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/admin">
-                    Administrar productos
-                  </Link>
-                </li>
+            {/* 🔥 ADMIN Y VENDEDOR */}
+            {(user?.rol === "admin" || user?.rol === "vendedor") && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">
+                  Administrar productos
+                </Link>
+              </li>
+            )}
 
-                <li className="nav-item">
-                  <Link className="nav-link" to="/admin/usuarios">
-                    Administrar usuarios
-                  </Link>
-                </li>
-              </>
+            {/* 🔥 SOLO ADMIN */}
+            {user?.rol === "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/usuarios">
+                  Administrar usuarios
+                </Link>
+              </li>
             )}
 
           </ul>
@@ -143,10 +145,9 @@ function Navbar() {
 
               </div>
 
-              {/* 🔥 DROPDOWN PRO */}
+              {/* 🔥 DROPDOWN */}
               <ul className="dropdown-menu dropdown-menu-end p-3" style={{ width: "260px" }}>
 
-                {/* FOTO */}
                 <li className="text-center mb-2">
                   <img
                     src={preview || user.foto || "https://via.placeholder.com/80"}
@@ -161,7 +162,6 @@ function Navbar() {
                   />
                 </li>
 
-                {/* INFO */}
                 <li className="text-center">
                   <strong>{user.nombre}</strong>
                 </li>
@@ -176,7 +176,6 @@ function Navbar() {
 
                 <li><hr /></li>
 
-                {/* BOTÓN CAMBIAR */}
                 <li className="mb-2">
                   <label className="btn btn-outline-primary w-100 btn-sm">
                     Cambiar foto
@@ -184,7 +183,6 @@ function Navbar() {
                   </label>
                 </li>
 
-                {/* BOTÓN GUARDAR */}
                 {preview && (
                   <li className="mb-2">
                     <button
@@ -198,7 +196,6 @@ function Navbar() {
 
                 <li><hr /></li>
 
-                {/* LOGOUT */}
                 <li>
                   <button
                     className="btn btn-danger w-100 btn-sm"

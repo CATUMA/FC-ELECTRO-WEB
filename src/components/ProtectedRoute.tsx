@@ -4,18 +4,19 @@ import { useAuth } from "../context/useAuth";
 
 type Props = {
   children: ReactNode;
-  rol?: string;
+  roles?: string[]; // 🔥 CAMBIO
 };
 
-function ProtectedRoute({ children, rol }: Props) {
+function ProtectedRoute({ children, roles }: Props) {
 
-  const auth = useAuth(); // 👈 CAMBIO CLAVE
+  const auth = useAuth();
 
   if (!auth.user) {
     return <Navigate to="/login" />;
   }
 
-  if (rol && auth.user.rol !== rol) {
+  // 🔥 NUEVA VALIDACIÓN
+  if (roles && !roles.includes(auth.user.rol)) {
     return <Navigate to="/inicio" />;
   }
 

@@ -114,6 +114,7 @@ function AdminUsuarios() {
                   <option value="cliente">Cliente</option>
                   <option value="admin">Admin</option>
                   <option value="soporte">Soporte</option>
+                  <option value="vendedor">Vendedor</option>
                 </select>
               </td>
 

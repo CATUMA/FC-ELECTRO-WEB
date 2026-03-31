@@ -27,21 +27,17 @@ function App() {
 
   const { user } = useAuth();
 
-  // 🔑 CLAVE POR USUARIO
   const keyCarrito = user ? `carrito_${user.id}` : "carrito_invitado";
 
-  // 🔥 CARGA INICIAL
   const [carrito, setCarrito] = useState<ProductoCarrito[]>(() => {
     const data = localStorage.getItem(keyCarrito);
     return data ? JSON.parse(data) : [];
   });
 
-  // 🔥 GUARDAR AUTOMÁTICAMENTE
   useEffect(() => {
     localStorage.setItem(keyCarrito, JSON.stringify(carrito));
   }, [carrito, keyCarrito]);
 
-  // ➕ AGREGAR
   const agregarAlCarrito = (producto: ProductoCarrito) => {
     setCarrito((prev) => {
       const existe = prev.find((p) => p.id === producto.id);
@@ -58,7 +54,6 @@ function App() {
     });
   };
 
-  // ➖ ELIMINAR (RESTAR CANTIDAD)
   const eliminarDelCarrito = (id: string) => {
     setCarrito((prev) =>
       prev
@@ -100,19 +95,21 @@ function App() {
         <Route path="/ofertas" element={<Ofertas />} />
         <Route path="/soporte" element={<SoporteTecnico />} />
 
+        {/* 🔥 ADMIN + VENDEDOR */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute rol="admin">
+            <ProtectedRoute roles={["admin", "vendedor"]}>
               <AdminProductos />
             </ProtectedRoute>
           }
         />
 
+        {/* 🔥 SOLO ADMIN */}
         <Route
           path="/admin/usuarios"
           element={
-            <ProtectedRoute rol="admin">
+            <ProtectedRoute roles={["admin"]}>
               <AdminUsuarios />
             </ProtectedRoute>
           }
