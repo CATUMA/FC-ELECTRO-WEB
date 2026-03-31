@@ -14,6 +14,7 @@ import SoporteTecnico from "./pages/SoporteTecnico";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProductos from "./pages/admin/AdminProductos";
 import AdminUsuarios from "./pages/admin/AdminUsuarios";
+import Historial from "./pages/Historial";
 
 export interface ProductoCarrito {
   id: string;
@@ -73,6 +74,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/inicio" />} />
         <Route path="/inicio" element={<Inicio />} />
+        <Route path="/historial" element={<Historial />} />
 
         <Route
           path="/productos"

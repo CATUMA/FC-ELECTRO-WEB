@@ -83,6 +83,15 @@ function Navbar() {
               <Link className="nav-link" to="/ofertas">Ofertas</Link>
             </li>
 
+            {/* 🔥 SOLO CLIENTE */}
+            {user?.rol === "cliente" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/historial">
+                  Mis compras
+                </Link>
+              </li>
+            )}
+
             {/* 🔥 ADMIN Y VENDEDOR */}
             {(user?.rol === "admin" || user?.rol === "vendedor") && (
               <li className="nav-item">
