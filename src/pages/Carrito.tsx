@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { ProductoCarrito } from "../App";
 import { useAuth } from "../context/useAuth";
 
@@ -9,15 +9,34 @@ interface Props {
 
 function Carrito({ carrito, eliminarDelCarrito }: Props) {
 
-  const { user } = useAuth(); // 🔥 IMPORTANTE
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const total = carrito.reduce(
     (acc, producto) => acc + producto.precio * producto.cantidad,
     0
   );
 
-  // 🔥 FINALIZAR COMPRA
+  // 🔥 FINALIZAR COMPRA COMPLETO
   const finalizarCompra = async () => {
+
+    // 🔹 VALIDAR LOGIN
+    if (!user) {
+      alert("Debes iniciar sesión");
+      return;
+    }
+
+    // 🔹 CONFIRMAR COMPRA (HU-14)
+    const confirmar = window.confirm("¿Deseas confirmar la compra?");
+    if (!confirmar) return;
+
+    // 🔹 SIMULAR PAGO (HU-15)
+    const pago = window.confirm("Simular pago exitoso?");
+    if (!pago) {
+      alert("❌ Pago cancelado");
+      return;
+    }
+
     try {
 
       const res = await fetch("http://localhost:4000/api/compras", {
@@ -25,35 +44,34 @@ function Carrito({ carrito, eliminarDelCarrito }: Props) {
         headers: {
           "Content-Type": "application/json"
         },
-       body: JSON.stringify({
-        usuarioId: user?.id,
-        carrito: carrito.map(p => ({
-          id: p.id,
-          cantidad: p.cantidad
-        }))
-      })
+        body: JSON.stringify({
+          usuarioId: user.id,
+          clienteNombre: user.nombre, // 🔥 NUEVO
+          carrito: carrito.map(p => ({
+            id: p.id,
+            cantidad: p.cantidad
+          }))
+        })
       });
 
       const data = await res.json();
 
-      // 🚨 SI HAY ERROR (ej: sin stock)
+      // 🚨 ERROR (ej: stock)
       if (!res.ok) {
         alert(data.mensaje);
         return;
       }
 
-      // ✅ COMPRA EXITOSA
-      alert("Compra realizada correctamente");
+      // ✅ ÉXITO
+      alert("✅ Compra realizada correctamente");
 
-      // 🔥 LIMPIAR CARRITO (LOCAL STORAGE)
-      if (user) {
-        localStorage.removeItem(`carrito_${user.id}`);
-      } else {
-        localStorage.removeItem("carrito_invitado");
-      }
+      // 🔥 LIMPIAR CARRITO
+      localStorage.removeItem(`carrito_${user.id}`);
 
-      // 🔄 RECARGAR
-      window.location.reload();
+      // 🔥 REDIRIGIR A COMPROBANTE (HU-16)
+      navigate("/comprobante", {
+        state: { compra: data.compra }
+      });
 
     } catch (error) {
       console.error("Error en compra", error);
@@ -119,7 +137,6 @@ function Carrito({ carrito, eliminarDelCarrito }: Props) {
       <div className="text-end mt-4">
         <h4>Total: S/ {total}</h4>
 
-        {/* 🔥 BOTÓN FUNCIONAL */}
         <button
           className="btn btn-success mt-2"
           onClick={finalizarCompra}

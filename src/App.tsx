@@ -17,6 +17,8 @@ import AdminUsuarios from "./pages/admin/AdminUsuarios";
 import Historial from "./pages/Historial";
 import BuscarClientes from "./pages/admin/BuscarClientes";
 import HistorialCliente from "./pages/admin/HistorialCliente";
+import Comprobante from "./pages/Comprobante";
+
 
 export interface ProductoCarrito {
   id: string;
@@ -77,6 +79,7 @@ function App() {
         <Route path="/" element={<Navigate to="/inicio" />} />
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/historial" element={<Historial />} />
+        <Route path="/comprobante" element={<Comprobante />} />
 
         <Route
           path="/productos"
