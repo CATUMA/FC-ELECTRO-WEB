@@ -110,6 +110,14 @@ function Navbar() {
               </li>
             )}
 
+            {user?.rol === "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/clientes">
+                  Buscar clientes
+                </Link>
+              </li>
+            )}
+
           </ul>
         </div>
 

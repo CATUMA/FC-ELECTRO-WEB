@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProductos from "./pages/admin/AdminProductos";
 import AdminUsuarios from "./pages/admin/AdminUsuarios";
 import Historial from "./pages/Historial";
+import BuscarClientes from "./pages/admin/BuscarClientes";
 
 export interface ProductoCarrito {
   id: string;
@@ -113,6 +114,16 @@ function App() {
           element={
             <ProtectedRoute roles={["admin"]}>
               <AdminUsuarios />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/admin/clientes"
+          element={
+            <ProtectedRoute roles={["admin"]}>
+              <BuscarClientes />
             </ProtectedRoute>
           }
         />
