@@ -18,6 +18,8 @@ import Historial from "./pages/Historial";
 import BuscarClientes from "./pages/admin/BuscarClientes";
 import HistorialCliente from "./pages/admin/HistorialCliente";
 import Comprobante from "./pages/Comprobante";
+import ReporteMensual from "./pages/ReporteMensual";
+import ReporteProductos from "./pages/ReporteProductos";
 
 
 export interface ProductoCarrito {
@@ -80,6 +82,8 @@ function App() {
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/historial" element={<Historial />} />
         <Route path="/comprobante" element={<Comprobante />} />
+        <Route path="/reporte-mensual" element={<ReporteMensual />} />
+        <Route path="/reporte-productos" element={<ReporteProductos />} />
 
         <Route
           path="/productos"

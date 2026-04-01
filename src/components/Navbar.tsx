@@ -94,12 +94,27 @@ function Navbar() {
 
             {/* 🔥 ADMIN Y VENDEDOR */}
             {(user?.rol === "admin" || user?.rol === "vendedor") && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/admin">
-                  Administrar productos
-                </Link>
-              </li>
-            )}
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/admin">
+                    Administrar productos
+                  </Link>
+                </li>
+
+                {/* 🔥 NUEVO: REPORTES */}
+                <li className="nav-item">
+                  <Link className="nav-link" to="/reporte-mensual">
+                    Reporte Ventas
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link className="nav-link" to="/reporte-productos">
+                    Top Productos
+                  </Link>
+                </li>
+              </>
+)}
 
             {/* 🔥 SOLO ADMIN */}
             {user?.rol === "admin" && (
